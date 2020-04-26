@@ -1,0 +1,38 @@
+header {
+ font-family: Futura; Trebuchet MS;
+ font-weight: bold condensed;
+ color: #AC2B37; 
+ font-size: 25px;
+ padding: 3px;
+}
+h1{
+ font-weight: bold;
+ font-family: Arial;
+ font-size: 20px;
+ padding: 3px;
+}
+body {
+ font-family: Arial;
+ font-size: 15px;
+}
+
+footer{
+ font-family: Arial;
+ font-size: 10px;
+ color: #A9B0B7; 
+ font-weight: italic;
+}
+
+p {
+    padding:3px;
+}
+
+table{
+ padding:12px;
+ 
+}
+
+div{
+    float: left;
+    border-style:solid;
+}
