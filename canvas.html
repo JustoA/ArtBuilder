@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://unpkg.com/konva@5.0.2/konva.min.js"></script>
+		<meta charset="utf-8" />
+		<title>ArtBuilder - New Canvas</title>
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+		</style>
+	</head>
+	<body>
+		<div id="toolbar">
+			<button id="back" onclick="location.href='index.html'">Back</button>
+			<table id="tools">
+				<tr>
+					<td><input type="image" id="circle" alt="Circle" src="img/circle.png" onclick="circleClicked()"></td>
+					<td><input type="image" id="square" alt="Square" src="img/square.png" onclick="squareClicked()"></td>
+					<td><input type="image" id="triangle" alt="Triangle" src="img/triangle.png" onclick="triangleClicked()"></td>
+				</tr>
+				<tr>
+					<td><input type="image" id="undo" alt="Undo" src="img/undo.png" onclick='wip()'></td>
+					<td><input type="image" id="redo" alt="Redo" src="img/redo.png" onclick='wip()'></td>
+					<td><input type="image" id="export" alt="Export" src="img/save.png" onclick="saveClicked()"></td>
+					<td><input type="image" id="image" alt="Image Overlay" src="img/image.png" onclick="imgClicked()"></td>
+				</tr>
+			</table> 
+
+		</div>
+		<div id="container"></div>
+		<script>
+			var COLORS = ['red','blue','green','yellow'];
+var width = window.innerWidth;
+var height = window.innerHeight;
+var all_shapes=[];
+var stage = new Konva.Stage({
+	container: 'container',
+	width: width,
+	height: height
+});
+var imgBack = new Konva.Image();
+var imgLayer = new Konva.Layer();
+Konva.Image.fromURL("https://collectionapi.metmuseum.org/api/collection/v1/iiif/191811/1724867/main-image", function(imgBack){
+
+	imgBack.scale({x:0.6,y:0.6});
+	imgLayer.add(imgBack);
+	imgBack.absolutePosition({x:width/3,y:height/6});
+	imgBack.name('image');
+	imgLayer.visible(false);
+	imgLayer.draw();
+});	
+var layer = new Konva.Layer();
+stage.add(imgLayer);
+stage.add(layer);
+var tr = new Konva.Transformer();
+layer.add(tr);
+tr.nodes([]);
+tr.padding(5);
+tr.keepRatio(false);
+tr.zIndex(0);
+stage.on('click tap', function (e) {
+	tr.moveToTop();
+	// if click on empty area - remove all selections
+	if (e.target === stage || e.target.name() == 'image') {
+		tr.nodes([]);
+		layer.draw();
+		return;
+	}
+	//otherwise select one
+	tr.nodes([e.target]);
+	layer.draw();
+});
+
+function circleClicked(){
+	console.log("IN CIRCLE");
+	var circle = new Konva.Circle({
+		x: window.innerWidth/2,
+		y: window.innerHeight/2,
+		radius: 70,
+		fill: 'red',
+		stroke: 'black',
+		strokeWidth: 4,
+		draggable: true
+	});
+	circle.on('mouseover', function() {
+		document.body.style.cursor = 'pointer';
+	});
+	circle.on('mouseout', function() {
+		document.body.style.cursor = 'default';
+	});
+	circle.on('dblclick', function(){ 
+		var ind = Math.floor(Math.random()*4);
+		this.fill(COLORS[ind]);	
+		this.draw();	
+	});
+	layer.add(circle);
+	layer.draw();
+	all_shapes.push(circle);
+}
+function squareClicked(){
+	console.log("IN SQUARE");
+	var square = new Konva.Rect({
+		x: window.innerWidth/2,
+		y: window.innerHeight/2,
+		width: 140,
+		height: 140,
+		fill: 'red',
+		stroke: 'black',
+		strokeWidth: 4,
+		draggable: true
+	});
+	square.on('mouseover', function() {
+		document.body.style.cursor = 'pointer';
+	});
+	square.on('mouseout', function() {
+		document.body.style.cursor = 'default';
+	});
+	square.on('dblclick', function(){ 
+		var ind = Math.floor(Math.random()*4);
+		this.fill(COLORS[ind]);	
+		this.draw();	
+	});
+	layer.add(square);
+	layer.draw();
+	all_shapes.push(square);
+}
+function triangleClicked(){
+	console.log("IN TRIANGLE");
+	var poly = new Konva.Line({
+		points: [50, 50, 50+140, 50, 50+70, 50+140, 50, 50],
+		fill: 'red',
+		stroke: 'black',
+		strokeWidth: 5,
+		draggable: true,
+		closed: true
+	});
+	poly.on('mouseover', function() {
+		document.body.style.cursor = 'pointer';
+	});
+	poly.on('mouseout', function() {
+		document.body.style.cursor = 'default';
+	});
+	poly.on('dblclick', function(){ 
+		var ind = Math.floor(Math.random()*4);
+		this.fill(COLORS[ind]);	
+		this.draw();	
+	});
+	layer.add(poly);
+	layer.draw();
+	all_shapes.push(poly);
+}
+
+function imgClicked(){
+	console.log(imgLayer.visible());
+	var newVis = !imgLayer.visible();
+	imgLayer.visible(newVis); 
+	imgLayer.draw();
+}
+// function from https://stackoverflow.com/a/15832662/512042
+function downloadURI(uri, name) {
+	var link = document.createElement('a');
+	link.download = name;
+	link.href = uri;
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+	delete link;
+}
+
+function saveClicked(){
+	var format = prompt("What format?\n (PNG / JPG)");
+	switch(format) {
+		case "PNG":
+		case "png":
+			var dataURL = stage.toDataURL({ pixelRatio: 3 });
+			downloadURI(dataURL, 'export.png');
+			break;
+		case "JPG":
+		case "jpg":
+			var dataURL = stage.toDataURL({ pixelRatio: 3, mimeType:"image/jpeg" });
+			downloadURI(dataURL, 'export.jpeg');
+			break;
+		default:
+			alert("I don't recognize that format.");
+	} 
+
+}
+function wip(){
+	alert("in progress :)");
+}
+		</script>
+	</body>
+</html>

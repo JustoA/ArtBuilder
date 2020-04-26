@@ -1,134 +1,22 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://unpkg.com/konva@5.0.2/konva.min.js"></script>
-    <meta charset="utf-8" />
-    <title>ArtBuilder - New Canvas</title>
-    <link rel="stylesheet" type="text/css" href="style.css"/>
-    </style>
-  </head>
-  <body>
-	<div id="toolbar">
-	 <table id="tools">
-		<tr>
-			<td><input type="image" id="circle" alt="Circle" src="img/circle.png" onclick="circleClicked()"></td>
-			<td><input type="image" id="square" alt="Square" src="img/square.png" onclick="squareClicked()"></td>
-			<td><input type="image" id="triangle" alt="Triangle" src="img/triangle.png" onclick="triangleClicked()"></td>
-		</tr>
-		  <tr>
-			<td><input type="image" id="undo" alt="Undo" src="img/undo.png"></td>
-			<td><input type="image" id="redo" alt="Redo" src="img/redo.png"></td>
-			<td><input type="image" id="export" alt="Export" src="img/save.png"></td>
-			<td><input type="image" id="image" alt="Image Overlay" src="img/image.png"></td>
-		  </tr>
-	</table> 
-
-	</div>
-    <div id="container"></div>
-    <script>
-	  var COLORS = ['red','blue','green','yellow'];
-      var width = window.innerWidth - 64;
-      var height = window.innerHeight -64;
-	  var all_shapes=[];
-      var stage = new Konva.Stage({
-        container: 'container',
-        width: width,
-        height: height
-      });
-
-      var layer = new Konva.Layer();
-      stage.add(layer);
-
-	function circleClicked(){
-		console.log("IN CIRCLE");
-	    var circle = new Konva.Circle({
-        x: window.innerWidth/2,
-        y: window.innerHeight/2,
-        radius: 70,
-        fill: 'red',
-        stroke: 'black',
-        strokeWidth: 4,
-		draggable: true
-      });
-		circle.on('mouseover', function() {
-        document.body.style.cursor = 'pointer';
-      });
-		circle.on('mouseout', function() {
-        document.body.style.cursor = 'default';
-      });
-		circle.on('click', function(){ 
-		var ind = Math.floor(Math.random()*4);
-		this.fill(COLORS[ind]);	
-		this.draw();	
-	  });
-		circle.on('dblclick', function(){
-		this.destroy();
-		layer.draw();
-		});
-		layer.add(circle);
-		layer.draw();
-		all_shapes.push(circle);
-	}
-function squareClicked(){
-		console.log("IN SQUARE");
-	    var square = new Konva.Rect({
-        x: window.innerWidth/2,
-        y: window.innerHeight/2,
-        width: 140,
-        height: 140,
-        fill: 'red',
-        stroke: 'black',
-        strokeWidth: 4,
-		draggable: true
-      });
-		square.on('mouseover', function() {
-        document.body.style.cursor = 'pointer';
-      });
-		square.on('mouseout', function() {
-        document.body.style.cursor = 'default';
-      });
-		square.on('click', function(){ 
-		var ind = Math.floor(Math.random()*4);
-		this.fill(COLORS[ind]);	
-		this.draw();	
-	  });
-		square.on('dblclick', function(){
-		this.destroy();
-		layer.draw();
-		});
-		layer.add(square);
-		layer.draw();
-		all_shapes.push(square);
-	}
-function triangleClicked(){
-		console.log("IN TRIANGLE");
-	    var poly = new Konva.Line({
-        points: [50, 50, 120, 50, 85, 90, 50, 50],
-        fill: 'red',
-        stroke: 'black',
-        strokeWidth: 5,
-		draggable: true,
-        closed: true
-      });
-		poly.on('mouseover', function() {
-        document.body.style.cursor = 'pointer';
-      });
-		poly.on('mouseout', function() {
-        document.body.style.cursor = 'default';
-      });
-		poly.on('click', function(){ 
-		var ind = Math.floor(Math.random()*4);
-		this.fill(COLORS[ind]);	
-		this.draw();	
-	  });
-		poly.on('dblclick', function(){
-		this.destroy();
-		layer.draw();
-		});
-		layer.add(poly);
-		layer.draw();
-		all_shapes.push(poly);
-	}
-	</script>
-  </body>
+	<html>
+	  <head>
+	    <script src="https://unpkg.com/konva@5.0.2/konva.min.js"></script>
+	    <meta charset="utf-8" />
+	    <title>ArtBuilder</title>
+	    <link rel="stylesheet" type="text/css" href="buttonstyle.css"/>
+	    </style>
+	  </head>
+	  <body>
+		<h1>Art Builder</h1>
+		<div id="buttons">
+		<button id="New Canvas" onclick="location.href='canvas.html'">New Canvas</button>
+		<button id="promptButton" onClick=wip()>Browse</button>
+		</div> 	
+		<script>
+		function wip(){
+			alert("wip");
+		}
+		</script>
+	  </body>
 </html>
