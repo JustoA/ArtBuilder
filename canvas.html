@@ -103,12 +103,12 @@ function addListeners(s){
 		document.body.style.cursor = 'default';
 	});
 	s.on('dblclick', function(){ 
+        undoqueue.push(btoa(stage.toJSON()));	
+        redoqueue = [];
 		var ind = Math.floor(Math.random()*4);
 		this.fill(COLORS[ind]);	
 		this.draw();
-        undoqueue.push(btoa(stage.toJSON()));	
-        console.log("pushed to undo");
-        redoqueue = [];
+        
 	});
         s.on('click', function(){
         lastClicked = this;
@@ -116,7 +116,6 @@ function addListeners(s){
         s.on('dragstart', function(){
         lastClicked = this;
         undoqueue.push(btoa(stage.toJSON()));
-        console.log("pushed to undo");
         redoqueue = [];
        });
 }
@@ -186,6 +185,7 @@ function imgClicked(){
 	    imgBack.name('image');
 	    imgLayer.draw();
 	    imgShown = true;
+        imgBack.draggable(true);
 	    });
 	}
 	else{
@@ -250,7 +250,7 @@ function trashClicked(){
 function undo(){
     if(undoqueue.length > 0){
         newState = undoqueue.pop();
-        redoqueue.push(newState);
+        redoqueue.push(btoa(stage.toJSON()));
         stage.destroy();
         restoreState(newState);
     }
@@ -258,11 +258,12 @@ function undo(){
 
 
 function redo(){
+    console.log(redoqueue.length);
     if(redoqueue.length > 0){
-        newState = redoqueue.pop();
-        undoqueue.push(newState);
+        oldState = redoqueue.pop();
+        undoqueue.push(btoa(stage.toJSON()));
         stage.destroy();
-        restoreState(newState);
+        restoreState(oldState);
     }
 }
 
