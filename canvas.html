@@ -224,14 +224,12 @@ function saveClicked(){
 }
 
 function shareClicked(){
-    const copyToClipboard = str => {
-    const el = document.createElement('textarea');
+    var el = document.createElement('textarea');
     el.value = btoa(stage.toJSON());
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    };
     alert("Copied canvas code to clipboard!");
 
 }
