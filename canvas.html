@@ -12,18 +12,19 @@
 			<button id="back" onclick="location.href='index.html'">Back</button>
 			<table id="tools">
 				<tr>
-					<td><input type="image" id="circle" alt="Circle" src="img/circle.png" onclick="circleClicked()"></td>
-					<td><input type="image" id="square" alt="Square" src="img/square.png" onclick="squareClicked()"></td>
-					<td><input type="image" id="triangle" alt="Triangle" src="img/triangle.png" onclick="triangleClicked()"></td>
+					<td><input type="image" id="circle" alt="Circle" src="img/circle.png" onclick="circleClicked()" title="Add a circle"></td>
+					<td><input type="image" id="square" alt="Square" src="img/square.png" onclick="squareClicked()" title="Add a square"></td>
+					<td><input type="image" id="triangle" alt="Triangle" src="img/triangle.png" onclick="triangleClicked()" title="Add a Triangle"></td>
 				</tr>
 				<tr>
-					<td><input type="image" id="undo" alt="Undo" src="img/undo.png" onclick='undo()'></td>
-					<td><input type="image" id="redo" alt="Redo" src="img/redo.png" onclick='redo()'></td>
-					<td><input type="image" id="export" alt="Export" src="img/save.png" onclick="saveClicked()"></td>
-                    <td><input type="image" id="share" alt="Share" src="img/share.png" onclick="shareClicked()"></td>
-					<td><input type="image" id="image" alt="Image Overlay" src="img/image.png" onclick="imgClicked()"></td>
-                    <td><input type="image" id="opacity" alt="Opacity Toggle" src="img/allseeingeye.png" onclick="opaClicked()"></td>
-                    <td><input type="image" id="trash" alt="Delete Shape" src="img/me.png" onclick="trashClicked()"></td>
+					<td><input type="image" id="undo" alt="Undo" src="img/undo.png" onclick='undo()' title="Undo"></td>
+					<td><input type="image" id="redo" alt="Redo" src="img/redo.png" onclick='redo()' title="Redo"></td>
+					<td><input type="image" id="export" alt="Export" src="img/save.png" onclick="saveClicked()" title="Download as image"></td>
+                    <td><input type="image" id="share" alt="Share" src="img/share.png" onclick="shareClicked()" title="Share canvas code"></td>
+					<td><input type="image" id="image" alt="Image Overlay" src="img/image.png" onclick="imgClicked()" title="Overlay image"></td>
+                    <td><input type="image" id="opacity" alt="Opacity Toggle" src="img/allseeingeye.png" onclick="opaClicked()" title="Toggle opacity"></td>
+                    <td><input type="image" id="trash" alt="Delete Shape" src="img/me.png" onclick="trashClicked()" title="Delete last used shape"></td>
+                    <td><input type="image" id="clear" alt="Clear All" src="img/clear.png" onclick="clearClicked()" title="Delete all shapes"></td>
 				</tr>
 			</table> 
 
@@ -285,6 +286,13 @@ function restoreState(s){
         addListeners(shape);
     }
     stage.draw();
+    layer.draw();
+}
+
+function clearClicked(){
+    undoqueue.push(btoa(stage.toJSON()));
+    redoqueue = [];
+    layer.removeChildren();
     layer.draw();
 }
 		</script>
