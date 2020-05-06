@@ -72,6 +72,8 @@ else {
     for (var shape of layer.getChildren()){
         addListeners(shape);
     }
+    stage.add(imgLayer);
+    imgLayer.zIndex(0);
     layer.draw();
 }
 
