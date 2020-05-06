@@ -224,8 +224,15 @@ function saveClicked(){
 }
 
 function shareClicked(){
-    alert("Triple click and hit ctrl+c to copy the canvas code when it pops up!");
-	alert(btoa(stage.toJSON()));
+    const copyToClipboard = str => {
+    const el = document.createElement('textarea');
+    el.value = btoa(stage.toJSON());
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    };
+    alert("Copied canvas code to clipboard!");
 
 }
 function opaClicked(){
