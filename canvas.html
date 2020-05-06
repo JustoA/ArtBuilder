@@ -17,45 +17,71 @@
 					<td><input type="image" id="triangle" alt="Triangle" src="img/triangle.png" onclick="triangleClicked()"></td>
 				</tr>
 				<tr>
-					<td><input type="image" id="undo" alt="Undo" src="img/undo.png" onclick='wip()'></td>
-					<td><input type="image" id="redo" alt="Redo" src="img/redo.png" onclick='wip()'></td>
+					<td><input type="image" id="undo" alt="Undo" src="img/undo.png" onclick='undo()'></td>
+					<td><input type="image" id="redo" alt="Redo" src="img/redo.png" onclick='redo()'></td>
 					<td><input type="image" id="export" alt="Export" src="img/save.png" onclick="saveClicked()"></td>
+                    <td><input type="image" id="share" alt="Share" src="img/share.png" onclick="shareClicked()"></td>
 					<td><input type="image" id="image" alt="Image Overlay" src="img/image.png" onclick="imgClicked()"></td>
+                    <td><input type="image" id="opacity" alt="Opacity Toggle" src="img/allseeingeye.png" onclick="opaClicked()"></td>
+                    <td><input type="image" id="trash" alt="Delete Shape" src="img/me.png" onclick="trashClicked()"></td>
 				</tr>
 			</table> 
 
 		</div>
 		<div id="container"></div>
 		<script>
-			var COLORS = ['red','blue','green','yellow'];
+var COLORS = ['red','blue','green','yellow'];
+var undoqueue = [];
+var redoqueue = [];
 var width = window.innerWidth;
+var imgShown = false;
 var height = window.innerHeight;
 var all_shapes=[];
-var stage = new Konva.Stage({
-	container: 'container',
-	width: width,
-	height: height
-});
+var lastClicked; 
 var imgBack = new Konva.Image();
 var imgLayer = new Konva.Layer();
-Konva.Image.fromURL("https://collectionapi.metmuseum.org/api/collection/v1/iiif/191811/1724867/main-image", function(imgBack){
 
-	imgBack.scale({x:0.6,y:0.6});
-	imgLayer.add(imgBack);
-	imgBack.absolutePosition({x:width/3,y:height/6});
-	imgBack.name('image');
-	imgLayer.visible(false);
-	imgLayer.draw();
-});	
-var layer = new Konva.Layer();
-stage.add(imgLayer);
-stage.add(layer);
+const queryString = window.location.search;
+
+const urlParams = new URLSearchParams(queryString);
+
+const loadCanvas = urlParams.get('loadCanvas');
+console.log(atob(loadCanvas));
+var layer;
+
+if (loadCanvas == null){
+    var stage = new Konva.Stage({
+        container: 'container',
+        width: width,
+        height: height
+    });
+        layer = new Konva.Layer();
+        layer.name("main");
+        stage.add(imgLayer);
+        stage.add(layer);
+}
+else {
+    var stage = Konva.Node.create(atob(loadCanvas),'container');
+    stage.width(width);
+    stage.height(height);
+    layer = stage.getChildren(function(l){
+        return l.name() == 'main';
+    });
+    layer = layer.toArray()[0];
+    for (var shape of layer.getChildren()){
+        addListeners(shape);
+    }
+    layer.draw();
+}
+
 var tr = new Konva.Transformer();
+console.log(layer);
 layer.add(tr);
 tr.nodes([]);
 tr.padding(5);
 tr.keepRatio(false);
 tr.zIndex(0);
+
 stage.on('click tap', function (e) {
 	tr.moveToTop();
 	// if click on empty area - remove all selections
@@ -69,7 +95,33 @@ stage.on('click tap', function (e) {
 	layer.draw();
 });
 
+function addListeners(s){
+	s.on('mouseover', function() {
+		document.body.style.cursor = 'pointer';
+	});
+	s.on('mouseout', function() {
+		document.body.style.cursor = 'default';
+	});
+	s.on('dblclick', function(){ 
+        undoqueue.push(btoa(stage.toJSON()));	
+        redoqueue = [];
+		var ind = Math.floor(Math.random()*4);
+		this.fill(COLORS[ind]);	
+		this.draw();
+        
+	});
+        s.on('click', function(){
+        lastClicked = this;
+     });
+        s.on('dragstart', function(){
+        lastClicked = this;
+        undoqueue.push(btoa(stage.toJSON()));
+        redoqueue = [];
+       });
+}
 function circleClicked(){
+    undoqueue.push(btoa(stage.toJSON()));
+    redoqueue = [];
 	console.log("IN CIRCLE");
 	var circle = new Konva.Circle({
 		x: window.innerWidth/2,
@@ -80,22 +132,14 @@ function circleClicked(){
 		strokeWidth: 4,
 		draggable: true
 	});
-	circle.on('mouseover', function() {
-		document.body.style.cursor = 'pointer';
-	});
-	circle.on('mouseout', function() {
-		document.body.style.cursor = 'default';
-	});
-	circle.on('dblclick', function(){ 
-		var ind = Math.floor(Math.random()*4);
-		this.fill(COLORS[ind]);	
-		this.draw();	
-	});
+	addListeners(circle);
 	layer.add(circle);
 	layer.draw();
 	all_shapes.push(circle);
 }
 function squareClicked(){
+    undoqueue.push(btoa(stage.toJSON()));
+    redoqueue = [];
 	console.log("IN SQUARE");
 	var square = new Konva.Rect({
 		x: window.innerWidth/2,
@@ -107,22 +151,14 @@ function squareClicked(){
 		strokeWidth: 4,
 		draggable: true
 	});
-	square.on('mouseover', function() {
-		document.body.style.cursor = 'pointer';
-	});
-	square.on('mouseout', function() {
-		document.body.style.cursor = 'default';
-	});
-	square.on('dblclick', function(){ 
-		var ind = Math.floor(Math.random()*4);
-		this.fill(COLORS[ind]);	
-		this.draw();	
-	});
+	addListeners(square);
 	layer.add(square);
 	layer.draw();
 	all_shapes.push(square);
 }
 function triangleClicked(){
+    undoqueue.push(btoa(stage.toJSON()));
+    redoqueue = [];
 	console.log("IN TRIANGLE");
 	var poly = new Konva.Line({
 		points: [50, 50, 50+140, 50, 50+70, 50+140, 50, 50],
@@ -132,27 +168,30 @@ function triangleClicked(){
 		draggable: true,
 		closed: true
 	});
-	poly.on('mouseover', function() {
-		document.body.style.cursor = 'pointer';
-	});
-	poly.on('mouseout', function() {
-		document.body.style.cursor = 'default';
-	});
-	poly.on('dblclick', function(){ 
-		var ind = Math.floor(Math.random()*4);
-		this.fill(COLORS[ind]);	
-		this.draw();	
-	});
+	addListeners(poly);
 	layer.add(poly);
 	layer.draw();
 	all_shapes.push(poly);
+    
 }
 
 function imgClicked(){
-	console.log(imgLayer.visible());
-	var newVis = !imgLayer.visible();
-	imgLayer.visible(newVis); 
-	imgLayer.draw();
+	if(!imgShown){
+	    var img = prompt("Please paste the url for the image");
+	    Konva.Image.fromURL(img, function(imgBack){
+	    imgBack.scale({x:0.6,y:0.6});
+	    imgLayer.add(imgBack);
+	    imgBack.absolutePosition({x:width/3,y:height/6});
+	    imgBack.name('image');
+	    imgLayer.draw();
+	    imgShown = true;
+        imgBack.draggable(true);
+	    });
+	}
+	else{
+	imgLayer.clear();
+        imgShown=false;
+      }	
 }
 // function from https://stackoverflow.com/a/15832662/512042
 function downloadURI(uri, name) {
@@ -183,9 +222,68 @@ function saveClicked(){
 	} 
 
 }
-function wip(){
-	alert("in progress :)");
+
+function shareClicked(){
+    alert("Triple click and hit ctrl+c to copy the canvas code when it pops up!");
+	alert(btoa(stage.toJSON()));
+
+}
+function opaClicked(){
+        console.log("old opacity= ")
+	    console.log(layer.opacity())
+	    layer.opacity((layer.opacity()+0.25) % 1.25);
+	    console.log("new opacity= ")
+	    console.log(layer.opacity())
+        layer.draw();
+
+}
+
+function trashClicked(){
+    if(lastClicked != null){
+    undoqueue.push(btoa(stage.toJSON()));
+	lastClicked.destroy();
+    layer.draw();
+    }
+
+}
+
+function undo(){
+    if(undoqueue.length > 0){
+        newState = undoqueue.pop();
+        redoqueue.push(btoa(stage.toJSON()));
+        stage.destroy();
+        restoreState(newState);
+    }
+}
+
+
+function redo(){
+    console.log(redoqueue.length);
+    if(redoqueue.length > 0){
+        oldState = redoqueue.pop();
+        undoqueue.push(btoa(stage.toJSON()));
+        stage.destroy();
+        restoreState(oldState);
+    }
+}
+
+
+function restoreState(s){
+    stage = Konva.Node.create(atob(s),'container');
+    stage.width(width);
+    stage.height(height);
+    layer = stage.getChildren(function(l){
+        return l.name() == 'main';
+    });
+    layer = layer.toArray()[0];
+    for (var shape of layer.getChildren()){
+        addListeners(shape);
+    }
+    stage.draw();
+    layer.draw();
 }
 		</script>
 	</body>
 </html>
+
+

@@ -8,14 +8,18 @@
 	    </style>
 	  </head>
 	  <body>
-		<h1>Art Builder</h1>
-		<div id="buttons">
+		<h1 style="text-align: center;">Art Builder</h1>
+		<div id="buttons">	
 		<button id="New Canvas" onclick="location.href='canvas.html'">New Canvas</button>
-		<button id="promptButton" onClick=wip()>Browse</button>
+		<button id="Load Canvas" onclick="load();">Load Canvas</button>
+		<button id="promptButton" onclick="location.href='browse.html'">Browse</button>
 		</div> 	
 		<script>
-		function wip(){
-			alert("wip");
+		function load(){
+			var code = prompt("Paste your canvas code.");
+			if(code != '' && code != null){
+			location.href='canvas.html?loadCanvas='.concat(code);
+			}
 		}
 		</script>
 	  </body>
