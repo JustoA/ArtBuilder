@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://unpkg.com/konva@5.0.2/konva.min.js"></script>
+		<meta charset="utf-8" />
+		<title>ArtBuilder</title>
+        <link rel="stylesheet" type="text/css" href="browse.css"/>
+		<!--<link rel="stylesheet" type="text/css" href="buttonstyle.css"/> -->
+		</style>
+	</head>
+	<body>
+		<button id="back" onclick="location.href='index.html'">Back</button>
+		<table style="width:50%">
+			<tr>
+				<th>Cat</th>
+				<td><img src="img/ex/cat.png"></img>
+				<td> <button type="button" onclick="location.href='canvas.html?loadCanvas=eyJhdHRycyI6eyJ3aWR0aCI6MTg1MCwiaGVpZ2h0Ijo2NTV9LCJjbGFzc05hbWUiOiJTdGFnZSIsImNoaWxkcmVuIjpbeyJhdHRycyI6e30sImNsYXNzTmFtZSI6IkxheWVyIiwiY2hpbGRyZW4iOlt7ImF0dHJzIjp7InNjYWxlWCI6MC42LCJzY2FsZVkiOjAuNiwieCI6NjE2LjY2NjY2NjY2NjY2NjYsInkiOjEwOS4xNjY2NjY2NjY2NjY2NywibmFtZSI6ImltYWdlIn0sImNsYXNzTmFtZSI6IkltYWdlIn1dfSx7ImF0dHJzIjp7Im5hbWUiOiJtYWluIiwib3BhY2l0eSI6MC41fSwiY2xhc3NOYW1lIjoiTGF5ZXIiLCJjaGlsZHJlbiI6W3siYXR0cnMiOnsieCI6MTIyMy4wMzM0MDUxNzI0MTQsInkiOjM0MS4yMDgwMTgxNTQzMTE3LCJyYWRpdXMiOjcwLCJmaWxsIjoicmVkIiwic3Ryb2tlIjoiYmxhY2siLCJzdHJva2VXaWR0aCI6NCwiZHJhZ2dhYmxlIjp0cnVlLCJzY2FsZVgiOjIuOTkzNTM0NDgyNzU4NjIzLCJzY2FsZVkiOjIuMDg3MjYyNTY1MTM2OTk3fSwiY2xhc3NOYW1lIjoiQ2lyY2xlIn0seyJhdHRycyI6eyJ4IjoxMjkzLjgwMzg3OTMxMDM0NDcsInkiOjQxOC41LCJyYWRpdXMiOjcwLCJmaWxsIjoiYmx1ZSIsInN0cm9rZSI6ImJsYWNrIiwic3Ryb2tlV2lkdGgiOjQsImRyYWdnYWJsZSI6dHJ1ZSwic2NhbGVYIjoxLjI2MzAzNTc5OTgwODQyNzYsInNjYWxlWSI6MS4yNjE0OTM1MjgzMjQwODczfSwiY2xhc3NOYW1lIjoiQ2lyY2xlIn0seyJhdHRycyI6eyJwb2ludHMiOls1MCw1MCwxOTAsNTAsMTIwLDE5MCw1MCw1MF0sImZpbGwiOiJyZWQiLCJzdHJva2UiOiJibGFjayIsInN0cm9rZVdpZHRoIjo1LCJkcmFnZ2FibGUiOnRydWUsImNsb3NlZCI6dHJ1ZSwieCI6MTIzOC45NDA3MTc5OTcxNjU4LCJ5IjozNTYuMTQ4NTI5NjI1MTAxMDUsInNjYWxlWCI6MC41NzY3MTUyODEwNTgxMDAzLCJzY2FsZVkiOjAuMjUzNDE0Mjk1NDg0MjE4M30sImNsYXNzTmFtZSI6IkxpbmUifSx7ImF0dHJzIjp7InBvaW50cyI6WzUwLDUwLDE5MCw1MCwxMjAsMTkwLDUwLDUwXSwiZmlsbCI6InJlZCIsInN0cm9rZSI6ImJsYWNrIiwic3Ryb2tlV2lkdGgiOjUsImRyYWdnYWJsZSI6dHJ1ZSwiY2xvc2VkIjp0cnVlLCJ4IjoxMjIxLjE1NDE5MjcxMTcwODQsInkiOjI1Mi42OTA2OTMxMTA4NTAyLCJyb3RhdGlvbiI6MTQ0LjQ1NTA3OTAxMjUzODI4LCJzY2FsZVgiOjAuOTk5OTk5OTk5OTk5OTk5Niwic2NhbGVZIjoxLjM1Njg3MjM3NDUzODI0NzR9LCJjbGFzc05hbWUiOiJMaW5lIn0seyJhdHRycyI6eyJwb2ludHMiOls1MCw1MCwxOTAsNTAsMTIwLDE5MCw1MCw1MF0sImZpbGwiOiJyZWQiLCJzdHJva2UiOiJibGFjayIsInN0cm9rZVdpZHRoIjo1LCJkcmFnZ2FibGUiOnRydWUsImNsb3NlZCI6dHJ1ZSwieCI6MTM2OC40OTcyNzI3Mzk5MzAyLCJ5IjozMjkuNzkzNDE3MDc2NzU1NTMsInJvdGF0aW9uIjoyMDYuMzU3NDIxNTM2NTg5NDcsInNjYWxlWCI6MC43MTA2NTI1MDgzODIxNDEyLCJzY2FsZVkiOjAuOTk5OTk5OTk5OTk5OTk5Nn0sImNsYXNzTmFtZSI6IkxpbmUifSx7ImF0dHJzIjp7IngiOjExODcuNzcyNzY0MDA4NjIxLCJ5IjozMDcuNjgxNzk1MjU5NzA3NTQsIndpZHRoIjoxNDAsImhlaWdodCI6MTQwLCJmaWxsIjoiYmx1ZSIsInN0cm9rZSI6ImJsYWNrIiwic3Ryb2tlV2lkdGgiOjQsImRyYWdnYWJsZSI6dHJ1ZSwic2NhbGVYIjowLjMxNDcyMjUyMTU1MTcyNDgsInNjYWxlWSI6MC4wOTE2NTQwNTk1MDU3OTkxMX0sImNsYXNzTmFtZSI6IlJlY3QifSx7ImF0dHJzIjp7IngiOjEzMjcuNzI3ODcxOTkwNTg4MywieSI6MzA3LjY1MjU4OTg5OTI1NTI1LCJ3aWR0aCI6MTQwLCJoZWlnaHQiOjE0MCwiZmlsbCI6ImJsdWUiLCJzdHJva2UiOiJibGFjayIsInN0cm9rZVdpZHRoIjo0LCJkcmFnZ2FibGUiOnRydWUsInJvdGF0aW9uIjozNDguMDcxNjk1Njc2MTA5Niwic2NhbGVYIjowLjM4MDMwNTc0OTgxNjY5NTA3LCJzY2FsZVkiOjAuMDczMTYzMjcxNjY1MzcxOTN9LCJjbGFzc05hbWUiOiJSZWN0In0seyJhdHRycyI6eyJwYWRkaW5nIjo1LCJrZWVwUmF0aW8iOmZhbHNlfSwiY2xhc3NOYW1lIjoiVHJhbnNmb3JtZXIifV19XX0='">Open in editor</button> </td>
+			</tr>
+			<tr>
+				<th>Telephone:</th>
+				<td>555 77 854</td>
+			</tr>
+			<tr>
+				<th>Telephone:</th>
+				<td>555 77 855</td>
+			</tr>
+		</table>
+	</body>
+</html>
